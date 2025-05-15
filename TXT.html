@@ -1,0 +1,185 @@
+{\rtf1\ansi\ansicpg932\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset128 HiraginoSans-W3;\f2\fnil\fcharset0 AppleColorEmoji;
+}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 <!DOCTYPE html>\
+<html lang="ja">\
+<head>\
+  <meta charset="UTF-8">\
+  <title>
+\f1 \'93\'ae\'95\'a8\'83\'8a\'83\'41\'83\'4e\'83\'56\'83\'87\'83\'93\'83\'51\'81\'5b\'83\'80
+\f0 </title>\
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">\
+  <style>\
+    body \{\
+      font-family: sans-serif;\
+      text-align: center;\
+      padding: 30px;\
+    \}\
+    h1 \{\
+      margin-bottom: 20px;\
+    \}\
+    .animal-buttons \{\
+      display: flex;\
+      justify-content: center;\
+      gap: 30px;\
+      margin: 20px 0;\
+    \}\
+    .animal \{\
+      font-size: 60px;\
+      cursor: pointer;\
+      border: 2px solid #ccc;\
+      border-radius: 20px;\
+      padding: 20px;\
+      transition: transform 0.2s;\
+    \}\
+    .animal:hover \{\
+      transform: scale(1.1);\
+    \}\
+    #prompt \{\
+      font-size: 24px;\
+      margin-top: 30px;\
+    \}\
+    #result \{\
+      margin-top: 20px;\
+      font-size: 20px;\
+    \}\
+  </style>\
+</head>\
+<body>\
+  <h1>
+\f1 \'93\'ae\'95\'a8\'83\'8a\'83\'41\'83\'4e\'83\'56\'83\'87\'83\'93\'83\'51\'81\'5b\'83\'80
+\f0 </h1>\
+  <p>
+\f1 \'89\'b9\'82\'c6\'95\'b6\'8e\'9a\'82\'f0\'8c\'a9\'82\'c4\'90\'b3\'82\'b5\'82\'a2\'93\'ae\'95\'a8\'82\'f0\'83\'5e\'83\'62\'83\'76\'81\'49
+\f0 </p>\
+  <button onclick="startGame()">
+\f1 \'83\'51\'81\'5b\'83\'80\'83\'58\'83\'5e\'81\'5b\'83\'67
+\f0 </button>\
+\
+  <div id="prompt">
+\f1 \'83\'51\'81\'5b\'83\'80\'82\'aa\'8e\'6e\'82\'dc\'82\'e9\'82\'e6\'81\'49
+\f0 </div>\
+\
+  <div class="animal-buttons">\
+    <div class="animal" onclick="selectAnimal('dog')">
+\f2 \uc0\u55357 \u56374 
+\f0 </div>\
+    <div class="animal" onclick="selectAnimal('cat')">
+\f2 \uc0\u55357 \u56369 
+\f0 </div>\
+    <div class="animal" onclick="selectAnimal('bird')">
+\f2 \uc0\u55357 \u56358 
+\f0 </div>\
+  </div>\
+\
+  <div id="result"></div>\
+\
+  <!-- 
+\f1 \'89\'b9\'90\'ba
+\f0  -->\
+  <audio id="dogSound" src="dog.mp3"></audio>\
+  <audio id="catSound" src="cat.mp3"></audio>\
+  <audio id="birdSound" src="bird.mp3"></audio>\
+\
+  <script>\
+    const animals = ['dog', 'cat', 'bird'];\
+    let currentAnimal = '';\
+    let startTime;\
+    let reactionTimes = [];\
+    let round = 0;\
+    const totalRounds = 3;\
+\
+    function startGame() \{\
+      reactionTimes = [];\
+      round = 0;\
+      document.getElementById("result").textContent = "";\
+      nextRound();\
+    \}\
+\
+    function nextRound() \{\
+      if (round >= totalRounds) \{\
+        showResults();\
+        return;\
+      \}\
+\
+      round++;\
+      const randomIndex = Math.floor(Math.random() * animals.length);\
+      currentAnimal = animals[randomIndex];\
+\
+      document.getElementById("prompt").textContent = `
+\f1 \'91\'e6
+\f0 $\{round\}
+\f1 \'96\'e2\'81\'46
+\f0 $\{animalLabel(currentAnimal)\}
+\f1 \'82\'aa\'96\'c2\'82\'a2\'82\'bd\'82\'e6\'81\'49
+\f0 `;\
+\
+      const sound = document.getElementById(currentAnimal + "Sound");\
+      setTimeout(() => \{\
+        sound.play();\
+        startTime = Date.now();\
+      \}, 1000); // 1
+\f1 \'95\'62\'92\'78\'82\'ea\'82\'c4\'96\'c2\'82\'ad
+\f0 \
+    \}\
+\
+    function selectAnimal(choice) \{\
+      if (!startTime) return;\
+\
+      const now = Date.now();\
+      const reactionTime = now - startTime;\
+\
+      if (choice === currentAnimal) \{\
+        reactionTimes.push(reactionTime);\
+        document.getElementById("result").textContent = `
+\f1 \'90\'b3\'89\'f0\'81\'49\'94\'bd\'89\'9e\'8e\'9e\'8a\'d4\'81\'46
+\f0 $\{reactionTime\} ms`;\
+      \} else \{\
+        document.getElementById("result").textContent = `
+\f1 \'8a\'d4\'88\'e1\'82\'a2\'81\'49
+\f0 $\{animalLabel(currentAnimal)\}
+\f1 \'82\'aa\'90\'b3\'89\'f0\'82\'be\'82\'c1\'82\'bd\'82\'e6
+\f0 `;\
+      \}\
+\
+      startTime = null;\
+      setTimeout(nextRound, 1500);\
+    \}\
+\
+    function showResults() \{\
+      const average = Math.round(reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length);\
+      const best = Math.min(...reactionTimes);\
+      document.getElementById("prompt").textContent = "
+\f1 \'83\'51\'81\'5b\'83\'80\'8f\'49\'97\'b9\'81\'49
+\f0 ";\
+      document.getElementById("result").textContent = `
+\f1 \'95\'bd\'8b\'cf\'94\'bd\'89\'9e\'8e\'9e\'8a\'d4\'81\'46
+\f0 $\{average\}ms 
+\f1 \'81\'5e
+\f0  
+\f1 \'83\'78\'83\'58\'83\'67\'83\'5e\'83\'43\'83\'80\'81\'46
+\f0 $\{best\}ms`;\
+    \}\
+\
+    function animalLabel(animal) \{\
+      return \{\
+        dog: '
+\f1 \'8c\'a2
+\f0 ',\
+        cat: '
+\f1 \'94\'4c
+\f0 ',\
+        bird: '
+\f1 \'92\'b9
+\f0 '\
+      \}[animal];\
+    \}\
+  </script>\
+</body>\
+</html>\
+}
